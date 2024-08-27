@@ -1,19 +1,19 @@
 import axios from "axios";
 
-export const fetchMovies = () => {
-	const searchText = "Harry Potter 4";
+export const fetchMovies = (searchText, movieCallBack, errorCallBack) => {
+	const url = `https://api.themoviedb.org/3/search/multi?query=${searchText}&include_adult=false&language=en-US&page=1&api_key=${process.env.REACT_APP_API_KEY}`;
 
-	const url = `https://api.themoviedb.org/3/search/multi?query=${searchText}&include_adult=false&language=en-US&page=1`;
+	axios
+		.get(url)
+		.then((response) => {
+			let resultArr = response.data.results;
+			resultArr = resultArr.filter((val) => {
+				return val.media_type === "movie" || val.media_type === "tv";
+			});
 
-	const options = {
-		method: "GET",
-		headers: {
-			accept: "application/json",
-			Authorization: `Bearer ${process.env.API_READ_ACCESS_TOKEN}`,
-		},
-	};
-
-	axios.get(url, options).then((response) => {
-		console.log(response.data);
-	});
+			console.log(resultArr);
+		})
+		.catch((error) => {
+			console.log("Brooo");
+		});
 };
