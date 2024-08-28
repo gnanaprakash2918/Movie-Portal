@@ -11,7 +11,7 @@ function MoviesPortal() {
 	// States to store movie data and error
 	const [movies, setMovies] = useState([]);
 	const [error, setError] = useState(null);
-	const [isPending, setIsPending] = useState(true);
+	const [isPending, setIsPending] = useState(false);
 
 	// Function to handle When the user presses "Enter key"
 	const onSearchTextEnter = (event) => {
