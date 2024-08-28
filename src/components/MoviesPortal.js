@@ -11,6 +11,7 @@ function MoviesPortal() {
 	// States to store movie data and error
 	const [movies, setMovies] = useState([]);
 	const [error, setError] = useState(null);
+	const [isPending, setIsPending] = useState(true);
 
 	// Function to handle When the user presses "Enter key"
 	const onSearchTextEnter = (event) => {
@@ -18,7 +19,7 @@ function MoviesPortal() {
 		event.preventDefault();
 
 		// Fire an API Request with searchInputText
-		fetchMovies(searchInputText, setMovies, setError);
+		fetchMovies(searchInputText, setMovies, setError, setIsPending);
 		setEnteredSearchText(searchInputText);
 	};
 
@@ -47,9 +48,10 @@ function MoviesPortal() {
 				</p>
 			)}
 
-			{movies.map((movie) => {
-				return <MovieDetail key={movie.id} movie={movie} />;
-			})}
+			{!isPending &&
+				movies.map((movie) => {
+					return <MovieDetail key={movie.id} movie={movie} />;
+				})}
 		</>
 	);
 }
