@@ -1,7 +1,14 @@
 import axios from "axios";
 
-export const fetchMovies = (searchText, movieCallBack, errorCallBack) => {
+export const fetchMovies = (
+	searchText,
+	movieCallBack,
+	errorCallBack,
+	setIsPending
+) => {
 	const url = `https://api.themoviedb.org/3/search/multi?query=${searchText}&include_adult=false&language=en-US&page=1&api_key=${process.env.REACT_APP_API_KEY}`;
+
+	setIsPending(true);
 
 	axios
 		.get(url)
@@ -34,31 +41,37 @@ export const fetchMovies = (searchText, movieCallBack, errorCallBack) => {
 					}
 				});
 
-			// add imdb_id property to each of the objects
-			resultArr = resultArr.map((val) => {
+			// Create an array of promises for fetching the imdb_id
+			const imdbPromises = resultArr.map((val) => {
 				const external_id_url = `https://api.themoviedb.org/3/${val.media_type}/${val.id}/external_ids?api_key=${process.env.REACT_APP_API_KEY}`;
 
-				axios
-					.get(external_id_url)
-					.then((res) => {
-						val.imdb_id = res.data.imdb_id;
-					})
-					.catch((error) => {
-						console.log("Error", error);
-					});
-
-				return val;
+				return axios.get(external_id_url).then((res) => {
+					val.imdb_id = res.data.imdb_id;
+					return val;
+				});
 			});
 
-			if (resultArr.length === 0) {
-				movieCallBack([]);
-				errorCallBack(Error("No Search Results Found !"));
-			} else {
-				movieCallBack(resultArr);
-				errorCallBack(null);
-			}
+			// Wait for all the promises to resolve
+			Promise.all(imdbPromises)
+				.then((updatedResultArr) => {
+					if (updatedResultArr.length === 0) {
+						movieCallBack([]);
+						errorCallBack(Error("No Search Results Found!"));
+					} else {
+						movieCallBack(updatedResultArr);
+						errorCallBack(null);
+					}
+					setIsPending(false);
+				})
+				.catch((error) => {
+					console.log("Error", error);
+					errorCallBack(error);
+					setIsPending(false);
+				});
 		})
 		.catch((error) => {
 			console.log("Error", error);
+			errorCallBack(error);
+			setIsPending(false);
 		});
 };
