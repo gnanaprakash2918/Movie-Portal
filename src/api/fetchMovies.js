@@ -6,14 +6,23 @@ export const fetchMovies = (searchText, movieCallBack, errorCallBack) => {
 	axios
 		.get(url)
 		.then((response) => {
+			console.log(response.data);
 			let resultArr = response.data.results;
 			resultArr = resultArr.filter((val) => {
 				return val.media_type === "movie" || val.media_type === "tv";
 			});
 
+			if (resultArr.length === 0) {
+				movieCallBack([]);
+				errorCallBack(Error("No Search Results Found !"));
+			} else {
+				movieCallBack(resultArr);
+				errorCallBack(null);
+			}
+
 			console.log(resultArr);
 		})
 		.catch((error) => {
-			console.log("Brooo");
+			console.log("Error", error);
 		});
 };
