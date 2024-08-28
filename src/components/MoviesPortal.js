@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { fetchMovies } from "../api/fetchMovies";
 import ErrorAlert from "./ErrorAlert";
+import MovieDetail from "./MovieDetail";
 
 function MoviesPortal() {
 	// States
@@ -45,7 +46,9 @@ function MoviesPortal() {
 				</p>
 			)}
 
-			{JSON.stringify(movies)}
+			{movies.map((movie) => {
+				return <MovieDetail key={movie.id} movie={movie} />;
+			})}
 		</>
 	);
 }
