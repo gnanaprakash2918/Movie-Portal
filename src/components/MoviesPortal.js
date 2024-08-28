@@ -4,16 +4,17 @@ import ErrorAlert from "./ErrorAlert";
 import MovieDetail from "./MovieDetail";
 
 function MoviesPortal() {
-	// States
+	// States to get Search Input
 	const [searchInputText, setSearchInputText] = useState("");
 	const [enteredSearchText, setEnteredSearchText] = useState("");
 
+	// States to store movie data and error
 	const [movies, setMovies] = useState([]);
 	const [error, setError] = useState(null);
 
 	// Function to handle When the user presses "Enter key"
 	const onSearchTextEnter = (event) => {
-		// Prevent Reload
+		// Prevent Reload on submit
 		event.preventDefault();
 
 		// Fire an API Request with searchInputText
