@@ -38,6 +38,7 @@ function MoviesPortal() {
 
 			<br />
 			{error && <ErrorAlert error={error} searchTerm={enteredSearchText} />}
+
 			{movies.length > 0 && (
 				<p className="text-light">
 					Showing {movies.length} results for '{enteredSearchText}'
@@ -45,7 +46,6 @@ function MoviesPortal() {
 			)}
 
 			{JSON.stringify(movies)}
-			<div>{searchInputText}</div>
 		</>
 	);
 }
