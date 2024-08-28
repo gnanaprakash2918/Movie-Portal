@@ -10,11 +10,13 @@ export const fetchMovies = (
 
 	setIsPending(true);
 
+	// First axios request
 	axios
 		.get(url)
 		.then((response) => {
 			let resultArr = response.data.results;
 
+			// Filter and map the results
 			resultArr = resultArr
 				.filter((val) => val.media_type === "movie" || val.media_type === "tv")
 				.map((val) => {
@@ -51,23 +53,18 @@ export const fetchMovies = (
 				});
 			});
 
-			// Wait for all the promises to resolve
-			Promise.all(imdbPromises)
-				.then((updatedResultArr) => {
-					if (updatedResultArr.length === 0) {
-						movieCallBack([]);
-						errorCallBack(Error("No Search Results Found!"));
-					} else {
-						movieCallBack(updatedResultArr);
-						errorCallBack(null);
-					}
-					setIsPending(false);
-				})
-				.catch((error) => {
-					console.log("Error", error);
-					errorCallBack(error);
-					setIsPending(false);
-				});
+			// Wait for all the imdbPromises to resolve
+			return Promise.all(imdbPromises);
+		})
+		.then((updatedResultArr) => {
+			if (updatedResultArr.length === 0) {
+				movieCallBack([]);
+				errorCallBack(Error("No Search Results Found!"));
+			} else {
+				movieCallBack(updatedResultArr);
+				errorCallBack(null);
+			}
+			setIsPending(false);
 		})
 		.catch((error) => {
 			console.log("Error", error);

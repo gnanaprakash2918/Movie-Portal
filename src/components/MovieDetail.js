@@ -33,7 +33,11 @@ const MovieDetail = ({ movie }) => {
 										IMDB
 									</a>
 									<a
-										href={`https://www.youtube.com/results?search_query=${movie.original_title} trailer`}
+										href={`https://www.youtube.com/results?search_query=${
+											movie.media_type === "tv"
+												? movie.original_name
+												: movie.original_title
+										} trailer`}
 										target="_blank"
 										className="card-link"
 										rel="noopener noreferrer"
